@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 50,
+    marginTop: 80,
     textAlign: "center",
     width: "100%",
   },
