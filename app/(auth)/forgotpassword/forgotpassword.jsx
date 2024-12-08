@@ -14,20 +14,20 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
-const forgotpassword = () => {
+const ForgotPassword = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: "#fff" }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
             paddingHorizontal: 20,
-            justifyContent: "center",
+            justifyContent: "justify-between",
           }}
         >
           {/* Header Section */}
@@ -38,10 +38,19 @@ const forgotpassword = () => {
               can be authenticated
             </Text>
           </View>
-          <Image
-            source={require("@/assets/images/forgot-password.png")}
-            style={{ width: 118, height: 93, marginTop: 52 }}
-          />
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              source={require("@/assets/images/forgot-password.png")}
+              style={{ width: 118, height: 93, marginTop: 52 }}
+            />
+          </View>
           <View>
             <Text style={styles.label}>Email</Text>
             <TextInput
@@ -72,6 +81,7 @@ const forgotpassword = () => {
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
+                onPress={() => router.push("/(auth)/login/login")}
               >
                 Back to Login
               </Text>
@@ -83,7 +93,7 @@ const forgotpassword = () => {
   );
 };
 
-export default forgotpassword;
+export default ForgotPassword;
 
 const styles = StyleSheet.create({
   text: {
@@ -99,8 +109,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   subTitle: {
-    fontSize: 20,
+    fontSize: 12,
     maxWidth: 314,
+    textAlign: "center",
+    marginTop: 11,
   },
   label: {
     fontSize: 20,
@@ -129,9 +141,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     marginTop: 29,
+    width: "100%",
   },
   resetBtn: {
-    width: 266,
+    width: "100%",
     paddingVertical: 16,
     backgroundColor: "#130160",
     borderRadius: 6,
@@ -139,7 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   backtologinBtn: {
-    width: 266,
+    width: "100%",
     paddingVertical: 16,
     backgroundColor: "#D6CDFE",
     borderRadius: 6,

@@ -30,7 +30,7 @@ const Login = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: "#fff" }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
@@ -98,7 +98,9 @@ const Login = () => {
             </TouchableOpacity>
             <Text
               style={{ color: "#130160", fontSize: 12 }}
-              onPress={() => router.push("/(auth)/forgottenpassword/index")}
+              onPress={() =>
+                router.push("/(auth)/forgotpassword/forgotpassword")
+              }
             >
               Forgot Password?
             </Text>
@@ -176,7 +178,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   log: {
-    fontSize: 20,
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: 11,
   },
   form: {
     marginTop: 20,

@@ -18,14 +18,14 @@ const CheckEmail = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: "#fff" }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
             paddingHorizontal: 20,
-            justifyContent: "center",
+            justifyContent: "justify-between",
           }}
         >
           {/* Header Section */}
@@ -36,10 +36,19 @@ const CheckEmail = () => {
               brandonelouis@gmail.com
             </Text>
           </View>
-          <Image
-            source={require("@/assets/images/check-email.png")}
-            style={{ width: 118, height: 93, marginTop: 52 }}
-          />
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              source={require("@/assets/images/check-email.png")}
+              style={{ width: 118, height: 93, marginTop: 52 }}
+            />
+          </View>
 
           {/* Buttons */}
           <View style={styles.buttonContainer}>
@@ -62,6 +71,7 @@ const CheckEmail = () => {
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
+                onPress={() => router.push("/(auth)/login/login")}
               >
                 Back to Login
               </Text>
@@ -77,7 +87,7 @@ const CheckEmail = () => {
               marginTop: 30,
             }}
           >
-            You don't have an account yet?{" "}
+            You haven't received an email yet?{" "}
             <Text
               style={{
                 textDecorationLine: "underline",
@@ -86,7 +96,7 @@ const CheckEmail = () => {
               }}
               onPress={() => router.push("/(auth)/signup/signup")}
             >
-              Sign up?
+              Resend email?
             </Text>
           </Text>
         </ScrollView>
@@ -111,8 +121,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   subTitle: {
-    fontSize: 20,
+    fontSize: 12,
     maxWidth: 314,
+    textAlign: "center",
+    marginTop: 11,
   },
   label: {
     fontSize: 20,
@@ -137,7 +149,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 29,
+    gap: 19,
     alignItems: "center",
     width: "100%",
     marginTop: 94,

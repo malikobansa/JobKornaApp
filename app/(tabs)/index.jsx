@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 const Index = () => {
   const router = useRouter();
   return (
-    <View>
+    <View style={{ backgroundColor: "#fff" }}>
       <Text style={styles.text}>JobKorna</Text>
       <Image style={styles.img} source={require("@/assets/images/job.png")} />
       <View>

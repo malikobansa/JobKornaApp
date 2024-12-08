@@ -16,6 +16,6 @@
     "app/(tabs)/index.jsx",
     "app/(auth)/signup/signup.jsx",
     "app/(auth)/login/login.jsx",
-    "app/(auth)/forgot-password/index.jsx"
+    "app/(auth)/forgotpassword/forgotpassword.jsx"
   ]
 }
