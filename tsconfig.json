@@ -12,6 +12,10 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "app/(tabs)/indexjtsx",
-    "app/(auth)/login/index.tsx"
+    "app/(auth)/login/index.tsx",
+    "app/(tabs)/index.jsx",
+    "app/(auth)/signup/signup.jsx",
+    "app/(auth)/login/login.jsx",
+    "app/(auth)/forgot-password/index.jsx"
   ]
 }
