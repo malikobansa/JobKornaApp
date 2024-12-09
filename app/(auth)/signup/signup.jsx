@@ -16,11 +16,12 @@ import {
 } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
-import { account } from '../../../constants/appwrite';
-import * as Google from 'expo-auth-session/providers/google'
+import { account } from "../../../constants/appwrite";
+import * as Google from "expo-auth-session/providers/google";
 
 const Signup = () => {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisible] = useState(false);
@@ -28,7 +29,8 @@ const Signup = () => {
 
   // Configure Google Sign-In
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: '11314065032-jcudl9tg7t5lfgqqtf6en17i4qt9fakp.apps.googleusercontent.com', // Replace with your Firebase Web Client ID
+    clientId:
+      "11314065032-jcudl9tg7t5lfgqqtf6en17i4qt9fakp.apps.googleusercontent.com", // Replace with your Firebase Web Client ID
   });
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const Signup = () => {
   };
 
   const handleSignup = async () => {
-    if (!email || !password) {
+    if (!name || !email || !password) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
@@ -51,6 +53,10 @@ const Signup = () => {
     try {
       // Create a new user
       await account.create("unique()", email, password);
+      
+      // Optionally update preferences with name
+      await account.updatePrefs({ name });
+
       Alert.alert("Success", "Account created successfully!");
       router.push("/(auth)/login/login"); // Navigate to Login page
     } catch (error) {
@@ -61,14 +67,14 @@ const Signup = () => {
   const handleGoogleSignIn = async (idToken) => {
     try {
       // Use idToken to create OAuth2 session
-     const session = await account.createOAuth2Session("google", idToken);
-      Alert.alert("Success", "Google Login successful!", session);
+      await account.createOAuth2Session("google", idToken);
+      Alert.alert("Success", "Google Login successful!");
       router.push("/(main)/home");
     } catch (error) {
       Alert.alert("Error", error.message || "Google Sign-In failed.");
     }
   };
-  
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -82,15 +88,22 @@ const Signup = () => {
           }}
         >
           <View>
-            {/* Header Section */}
             <View style={styles.text}>
               <Text style={styles.come}>Create An Account 👋</Text>
               <Text style={styles.log}>Create your account below</Text>
             </View>
 
-            {/* Form Section */}
             <View style={styles.form}>
-              {/* Email Input */}
+              <View>
+                <Text style={styles.label}>Full Name</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Your Full Name"
+                  onChangeText={(text) => setName(text)}
+                  value={name}
+                  autoCapitalize="none"
+                />
+              </View>
               <View>
                 <Text style={styles.label}>Email</Text>
                 <TextInput
@@ -102,7 +115,6 @@ const Signup = () => {
                   autoCapitalize="none"
                 />
               </View>
-              {/* Password Input */}
               <View>
                 <Text style={styles.label}>Password</Text>
                 <View style={styles.passwordContainer}>
@@ -134,76 +146,39 @@ const Signup = () => {
                     <Entypo name="check" size={20} color="#130160" />
                   )}
                 </View>
-                <Text
-                  style={{
-                    fontWeight: "400",
-                    fontSize: 12,
-                    color: "#AAA6B9",
-                  }}
-                >
-                  Remember Me
-                </Text>
+                <Text style={styles.rememberText}>Remember Me</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push('/forgotpassword/forgotPassword')}>
+              <TouchableOpacity
+                onPress={() => router.push("/forgotpassword/forgotPassword")}
+              >
                 <Text style={{ color: "#130160", fontSize: 12 }}>
                   Forgot Password?
                 </Text>
               </TouchableOpacity>
-
             </View>
-            {/* Buttons */}
             <View style={styles.buttonContainer}>
               <Pressable style={styles.signupBtn} onPress={handleSignup}>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontSize: 14,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Sign Up
-                </Text>
+                <Text style={styles.signupText}>SIGN UP</Text>
               </Pressable>
               <Pressable
                 style={styles.googleBtn}
-                onPress={handleGoogleSignIn}
+                onPress={() => promptAsync()}
                 disabled={!request}
               >
                 <Image
                   source={require("@/assets/images/google-icon.png")}
                   style={{ width: 20, height: 20 }}
                 />
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontSize: 14,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Sign up with Google
-                </Text>
+                <Text style={styles.googleText}>SIGN UP WITH GOOGLE</Text>
               </Pressable>
             </View>
-            <Text
-              style={{
-                fontFamily: "DM Sans",
-                fontSize: 12,
-                fontWeight: "400",
-                width: "100%",
-                textAlign: "center",
-                marginTop: 16,
-              }}
-            >
+            <Text style={styles.alreadyHaveAccount}>
               Already have an account?{" "}
               <Text
-                style={{
-                  textDecorationLine: "underline",
-                  textDecorationStyle: "solid",
-                  color: "#FF9228",
-                }}
+                style={styles.loginLink}
                 onPress={() => router.push("/(auth)/login/login")}
               >
-                Log in?
+                Log in
               </Text>
             </Text>
           </View>
@@ -214,6 +189,7 @@ const Signup = () => {
 };
 
 export default Signup;
+
 
 const styles = StyleSheet.create({
   // Same styles as before
@@ -314,6 +290,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  signupText: {
+    color: '#fff',
+    fontSize: 17
+  },
   googleBtn: {
     width: 266,
     paddingVertical: 16,
@@ -324,4 +304,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  googleText: {
+    color:'#fff'
+  }
 });
