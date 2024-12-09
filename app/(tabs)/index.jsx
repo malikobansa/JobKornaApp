@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  Pressable,
+} from "react-native";
 import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useRouter } from "expo-router";
@@ -6,7 +13,7 @@ import { useRouter } from "expo-router";
 const Index = () => {
   const router = useRouter();
   return (
-    <View style={{ backgroundColor: "#fff" }}>
+    <ScrollView style={{ backgroundColor: "#fff" }}>
       <Text style={styles.text}>JobKorna</Text>
       <Image style={styles.img} source={require("@/assets/images/job.png")} />
       <View>
@@ -29,7 +36,7 @@ const Index = () => {
           />
         </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableWithoutFeedback,
   Keyboard,
   Pressable,
   Image,
@@ -22,7 +21,7 @@ const ForgotPassword = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1, backgroundColor: "#fff" }}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <Pressable onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -74,21 +73,23 @@ const ForgotPassword = () => {
                 Reset Password
               </Text>
             </Pressable>
-            <Pressable style={styles.backtologinBtn}>
+            <Pressable
+              style={styles.backtologinBtn}
+              onPress={() => router.push("/(auth)/login/login")}
+            >
               <Text
                 style={{
                   color: "#fff",
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
-                onPress={() => router.push("/(auth)/login/login")}
               >
                 Back to Login
               </Text>
             </Pressable>
           </View>
         </ScrollView>
-      </TouchableWithoutFeedback>
+      </Pressable>
     </KeyboardAvoidingView>
   );
 };

@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableWithoutFeedback,
   Keyboard,
   Pressable,
   Image,
@@ -20,7 +19,7 @@ const CheckEmail = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1, backgroundColor: "#fff" }}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <Pressable onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -52,26 +51,30 @@ const CheckEmail = () => {
 
           {/* Buttons */}
           <View style={styles.buttonContainer}>
-            <Pressable style={styles.resetBtn}>
+            <Pressable
+              style={styles.resetBtn}
+              onPress={() => router.push("/(auth)/success/success")}
+            >
               <Text
                 style={{
                   color: "#fff",
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
-                onPress={() => router.push("/(auth)/success/success")}
               >
                 Open your email
               </Text>
             </Pressable>
-            <Pressable style={styles.backtologinBtn}>
+            <Pressable
+              style={styles.backtologinBtn}
+              onPress={() => router.push("/(auth)/login/login")}
+            >
               <Text
                 style={{
                   color: "#fff",
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
-                onPress={() => router.push("/(auth)/login/login")}
               >
                 Back to Login
               </Text>
@@ -100,7 +103,7 @@ const CheckEmail = () => {
             </Text>
           </Text>
         </ScrollView>
-      </TouchableWithoutFeedback>
+      </Pressable>
     </KeyboardAvoidingView>
   );
 };

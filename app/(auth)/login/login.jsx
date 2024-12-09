@@ -8,9 +8,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
   Pressable,
+  Keyboard,
   Image,
 } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -32,7 +31,7 @@ const Login = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1, backgroundColor: "#fff" }}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <Pressable onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -157,7 +156,7 @@ const Login = () => {
             </Text>
           </Text>
         </ScrollView>
-      </TouchableWithoutFeedback>
+      </Pressable>
     </KeyboardAvoidingView>
   );
 };
