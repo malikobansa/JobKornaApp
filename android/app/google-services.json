@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11314065032",
+    "project_id": "jobkorna-29b30",
+    "storage_bucket": "jobkorna-29b30.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11314065032:android:5732e5a60f96e0a121393d",
+        "android_client_info": {
+          "package_name": "com.jobkorna.job"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMjTu3piQGRxGy3iPnvpFHritrNASCz3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

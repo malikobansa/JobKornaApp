@@ -12,7 +12,7 @@ const Index = () => {
       <View>
         <Text style={styles.line}>Find Your <Text style={styles.underline}>Dream Job</Text> Here!</Text>
         <Text style={styles.sub}>Explore all the most exciting job roles based on your interest and study major.</Text>
-        <Pressable style={styles.icon} onPress={() => router.push('/(auth)/welcome')}>
+        <Pressable style={styles.icon} onPress={() => router.push('/(auth)/login/login')}>
         <AntDesign name="caretright" size={50} color="black" style={styles.con} /> 
         </Pressable>
       </View>

@@ -5,17 +5,20 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "com.jobkorna.job",
     "userInterfaceStyle": "automatic",
+    "image" : "latest",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jobkorna.job"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package" : "com.jobkorna.job"
     },
     "web": {
       "bundler": "metro",
@@ -32,7 +35,12 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      ["expo-build-properties", {
+            "ios" :{
+              "useFrameworks": "static"
+            }
+      }]
     ],
     "experiments": {
       "typedRoutes": true
