@@ -7,21 +7,36 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  TouchableWithoutFeedback,
   Keyboard,
   Pressable,
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { account } from "../../../constants/appwrite";
 
 const ForgotPassword = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
+
+  const handlePasswordReset = async () => {
+    try {
+      await account.createRecovery(
+        email,
+        "https://your-redirect-url.com/reset-password" // Replace with your redirect URL
+      );
+      Alert.alert("Success", "A password reset email has been sent.");
+      router.push("/(auth)/check-email/checkEmail");
+    } catch (error) {
+      Alert.alert("Error", error.message || "Failed to send reset email.");
+    }
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1, backgroundColor: "#fff" }}
     >
-      <Pressable onPress={Keyboard.dismiss}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -68,28 +83,26 @@ const ForgotPassword = () => {
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
-                onPress={() => router.push("/(auth)/check-email/checkEmail")}
+                onPress={handlePasswordReset}
               >
                 Reset Password
               </Text>
             </Pressable>
-            <Pressable
-              style={styles.backtologinBtn}
-              onPress={() => router.push("/(auth)/login/login")}
-            >
+            <Pressable style={styles.backtologinBtn}>
               <Text
                 style={{
                   color: "#fff",
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
+                onPress={() => router.push("/(auth)/login/login")}
               >
                 Back to Login
               </Text>
             </Pressable>
           </View>
         </ScrollView>
-      </Pressable>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 };

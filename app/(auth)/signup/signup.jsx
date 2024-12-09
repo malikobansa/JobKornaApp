@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
   Keyboard,
+  TouchableWithoutFeedback,
   Pressable,
   Image,
   Alert,
@@ -52,7 +53,7 @@ const Signup = () => {
       // Create a new user
       await account.create("unique()", email, password);
       Alert.alert("Success", "Account created successfully!");
-      router.push("/(auth)/login/login"); // Navigate to Login page
+      router.push("/(auth)/login/login");
     } catch (error) {
       Alert.alert("Error", error.message || "Something went wrong.");
     }

@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 50,
+    marginTop: 80,
     textAlign: "center",
     width: "100%",
   },
@@ -243,7 +243,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   log: {
-    fontSize: 20,
+    fontSize: 12,
+    maxWidth: 314,
+    textAlign: "center",
+    marginTop: 11,
   },
   form: {
     marginTop: 20,

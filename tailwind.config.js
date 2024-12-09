@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./App.{js,jsx,ts,tsx}", "./Components.{js,jsx,ts,tsx}"],
+  content: ["./App.{js,jsx,ts,tsx}", "./components/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {
@@ -17,6 +17,8 @@ module.exports = {
         lilac: "#BEAFFE",
         red: "#FC4646",
         offWhite: "#F9F9F9",
+        lightGrey: "#ADAAB9",
+        lightestGrey: "#CBC9D4",
       },
     },
   },
