@@ -16,11 +16,10 @@ import {
 } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
-import { account } from '../../../constants/appwrite';
+import { account } from "../../../constants/appwrite";
 import * as WebBrowser from "expo-web-browser";
-import * as AuthSession from "expo-auth-session"
+import * as AuthSession from "expo-auth-session";
 import { useAuthRequest, makeRedirectUri } from "expo-auth-session";
-
 
 // Configure WebBrowser for authentication
 WebBrowser.maybeCompleteAuthSession();
@@ -34,7 +33,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const [request, response, promptAsync] = AuthSession.useAuthRequest({
-    clientId: "11314065032-jcudl9tg7t5lfgqqtf6en17i4qt9fakp.apps.googleusercontent.com",
+    clientId:
+      "11314065032-jcudl9tg7t5lfgqqtf6en17i4qt9fakp.apps.googleusercontent.com",
     redirectUri: AuthSession.makeRedirectUri({
       native: "com.jobkorna://oauthredirect",
     }),
@@ -43,8 +43,6 @@ const Login = () => {
   });
 
   console.log(AuthSession);
-
-
 
   React.useEffect(() => {
     if (response?.type === "success") {
@@ -61,11 +59,10 @@ const Login = () => {
       Alert.alert("Error", error.message || "Google Sign-In failed.");
     }
   };
-  
+
   const togglePasswordVisibility = () => {
     setPasswordVisible(!isPasswordVisible);
   };
-
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -75,14 +72,13 @@ const Login = () => {
 
     try {
       const session = await account.get(email, password);
-      console.log('Login successful:', session);
-      router.push('/(main)/home')
+      console.log("Login successful:", session);
+      router.push("/(main)/home");
     } catch (error) {
-      console.error('Error during login:', error.message);
-      Alert.alert('Error', error.message || 'Login failed');
+      console.error("Error during login:", error.message);
+      Alert.alert("Error", error.message || "Login failed");
     }
   };
-
 
   return (
     <KeyboardAvoidingView
@@ -159,7 +155,9 @@ const Login = () => {
                   Remember Me
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity  onPress={() => router.push('/forgotpassword/forgotPassword')}>
+              <TouchableOpacity
+                onPress={() => router.push("/forgotpassword/forgotPassword")}
+              >
                 <Text style={{ color: "#130160", fontSize: 12 }}>
                   Forgot Password?
                 </Text>
@@ -236,7 +234,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 50,
+    marginTop: 80,
     textAlign: "center",
     width: "100%",
   },
@@ -245,7 +243,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   log: {
-    fontSize: 20,
+    fontSize: 12,
+    maxWidth: 314,
+    textAlign: "center",
+    marginTop: 11,
   },
   form: {
     marginTop: 20,

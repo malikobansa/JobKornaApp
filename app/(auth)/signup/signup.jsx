@@ -5,19 +5,19 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Keyboard,
+  TouchableWithoutFeedback,
   Pressable,
   Image,
   Alert,
 } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
-import { account } from '../../../constants/appwrite';
-import * as Google from 'expo-auth-session/providers/google'
+import { account } from "../../../constants/appwrite";
+import * as Google from "expo-auth-session/providers/google";
 
 const Signup = () => {
   const router = useRouter();
@@ -28,7 +28,8 @@ const Signup = () => {
 
   // Configure Google Sign-In
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: '11314065032-jcudl9tg7t5lfgqqtf6en17i4qt9fakp.apps.googleusercontent.com', // Replace with your Firebase Web Client ID
+    clientId:
+      "11314065032-jcudl9tg7t5lfgqqtf6en17i4qt9fakp.apps.googleusercontent.com", // Replace with your Firebase Web Client ID
   });
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const Signup = () => {
       // Create a new user
       await account.create("unique()", email, password);
       Alert.alert("Success", "Account created successfully!");
-      router.push("/(auth)/login/login"); // Navigate to Login page
+      router.push("/(auth)/login/login");
     } catch (error) {
       Alert.alert("Error", error.message || "Something went wrong.");
     }
@@ -61,14 +62,14 @@ const Signup = () => {
   const handleGoogleSignIn = async (idToken) => {
     try {
       // Use idToken to create OAuth2 session
-     const session = await account.createOAuth2Session("google", idToken);
+      const session = await account.createOAuth2Session("google", idToken);
       Alert.alert("Success", "Google Login successful!", session);
       router.push("/(main)/home");
     } catch (error) {
       Alert.alert("Error", error.message || "Google Sign-In failed.");
     }
   };
-  
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -144,12 +145,13 @@ const Signup = () => {
                   Remember Me
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push('/forgotpassword/forgotPassword')}>
+              <TouchableOpacity
+                onPress={() => router.push("/forgotpassword/forgotPassword")}
+              >
                 <Text style={{ color: "#130160", fontSize: 12 }}>
                   Forgot Password?
                 </Text>
               </TouchableOpacity>
-
             </View>
             {/* Buttons */}
             <View style={styles.buttonContainer}>
@@ -216,12 +218,11 @@ const Signup = () => {
 export default Signup;
 
 const styles = StyleSheet.create({
-  // Same styles as before
   text: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 50,
+    marginTop: 80,
     textAlign: "center",
     width: "100%",
   },
@@ -230,7 +231,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   log: {
-    fontSize: 20,
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: 11,
   },
   form: {
     marginTop: 20,
@@ -272,31 +275,6 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#0D014099",
     fontSize: 16,
-  },
-  forgottenPassword: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    backgroundColor: "#E6E1FF",
-    borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#99ABC6",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 31,
-    elevation: 8,
-  },
-  checkboxContainer: {
-    flexDirection: "row",
-    gap: 15,
-    alignItems: "center",
   },
   buttonContainer: {
     display: "flex",
