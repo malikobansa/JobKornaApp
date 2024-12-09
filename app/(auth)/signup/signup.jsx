@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,135 +11,205 @@ import {
   Keyboard,
   Pressable,
   Image,
+  Alert,
 } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
+import { account } from "../../../constants/appwrite";
+import * as Google from "expo-auth-session/providers/google";
 
 const Signup = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const [isChecked, setChecked] = useState(false);
+
+  // Configure Google Sign-In
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    clientId:
+      "11314065032-jcudl9tg7t5lfgqqtf6en17i4qt9fakp.apps.googleusercontent.com", // Replace with your Firebase Web Client ID
+  });
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { id_token } = response.params;
+      handleGoogleSignIn(id_token);
+    }
+  }, [response]);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!isPasswordVisible);
   };
 
+  const handleSignup = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+
+    try {
+      // Create a new user
+      await account.create("unique()", email, password);
+      Alert.alert("Success", "Account created successfully!");
+      router.push("/(auth)/login/login"); // Navigate to Login page
+    } catch (error) {
+      Alert.alert("Error", error.message || "Something went wrong.");
+    }
+  };
+
+  const handleGoogleSignIn = async (idToken) => {
+    try {
+      // Use idToken to create OAuth2 session
+      const session = await account.createOAuth2Session("google", idToken);
+      Alert.alert("Success", "Google Login successful!", session);
+      router.push("/(main)/home");
+    } catch (error) {
+      Alert.alert("Error", error.message || "Google Sign-In failed.");
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: "#fff" }}
+      style={{ flex: 1 }}
     >
-      <Pressable onPress={Keyboard.dismiss}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
             paddingHorizontal: 20,
           }}
         >
-          {/* Header Section */}
-          <View style={styles.text}>
-            <Text style={styles.come}>Create An Account</Text>
-            <Text style={styles.log}>Please provide your details</Text>
-          </View>
+          <View>
+            {/* Header Section */}
+            <View style={styles.text}>
+              <Text style={styles.come}>Create An Account 👋</Text>
+              <Text style={styles.log}>Create your account below</Text>
+            </View>
 
-          {/* Form Section */}
-          <View style={styles.form}>
-            {/* Fullname Input */}
-            <View>
-              <Text style={styles.label}>Full Name</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Brandone Louis"
-                onChangeText={(text) => setEmail(text)}
-                value={email}
-              />
-            </View>
-            {/* Email Input */}
-            <View>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Your Email"
-                onChangeText={(text) => setEmail(text)}
-                value={email}
-              />
-            </View>
-            {/* Password Input */}
-            <View>
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.passwordContainer}>
+            {/* Form Section */}
+            <View style={styles.form}>
+              {/* Email Input */}
+              <View>
+                <Text style={styles.label}>Email</Text>
                 <TextInput
-                  style={styles.passwordInput}
-                  placeholder="Your Password"
-                  onChangeText={(text) => setPassword(text)}
-                  value={password}
-                  secureTextEntry={!isPasswordVisible}
+                  style={styles.input}
+                  placeholder="Your Email"
+                  onChangeText={(text) => setEmail(text)}
+                  value={email}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
                 />
-                <TouchableOpacity onPress={togglePasswordVisibility}>
-                  <Entypo
-                    name={isPasswordVisible ? "eye-with-line" : "eye"}
-                    size={24}
-                    color="#60778C"
+              </View>
+              {/* Password Input */}
+              <View>
+                <Text style={styles.label}>Password</Text>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Your Password"
+                    onChangeText={(text) => setPassword(text)}
+                    value={password}
+                    secureTextEntry={!isPasswordVisible}
+                    autoCapitalize="none"
                   />
-                </TouchableOpacity>
+                  <TouchableOpacity onPress={togglePasswordVisibility}>
+                    <Entypo
+                      name={isPasswordVisible ? "eye-with-line" : "eye"}
+                      size={24}
+                      color="#60778C"
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-
-          {/* Buttons */}
-          <View style={styles.buttonContainer}>
-            <Pressable style={styles.signupBtn}>
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 14,
-                  textTransform: "uppercase",
-                }}
+            <View style={styles.forgottenPassword}>
+              <TouchableOpacity
+                style={styles.checkboxContainer}
+                onPress={() => setChecked(!isChecked)}
               >
-                Sign Up
-              </Text>
-            </Pressable>
-            <Pressable style={styles.googleBtn}>
-              <Image
-                source={require("@/assets/images/google-icon.png")}
-                style={{ width: 20, height: 20 }}
-              />
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 14,
-                  textTransform: "uppercase",
-                }}
+                <View style={styles.checkbox}>
+                  {isChecked && (
+                    <Entypo name="check" size={20} color="#130160" />
+                  )}
+                </View>
+                <Text
+                  style={{
+                    fontWeight: "400",
+                    fontSize: 12,
+                    color: "#AAA6B9",
+                  }}
+                >
+                  Remember Me
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push("/forgotpassword/forgotPassword")}
               >
-                Sign up with Google
-              </Text>
-            </Pressable>
-          </View>
-          <Text
-            style={{
-              fontFamily: "DM Sans",
-              fontSize: 12,
-              fontWeight: "400",
-              width: "100%",
-              textAlign: "center",
-              marginTop: 16,
-            }}
-          >
-            You already have an account?{" "}
+                <Text style={{ color: "#130160", fontSize: 12 }}>
+                  Forgot Password?
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {/* Buttons */}
+            <View style={styles.buttonContainer}>
+              <Pressable style={styles.signupBtn} onPress={handleSignup}>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 14,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Sign Up
+                </Text>
+              </Pressable>
+              <Pressable
+                style={styles.googleBtn}
+                onPress={handleGoogleSignIn}
+                disabled={!request}
+              >
+                <Image
+                  source={require("@/assets/images/google-icon.png")}
+                  style={{ width: 20, height: 20 }}
+                />
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 14,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Sign up with Google
+                </Text>
+              </Pressable>
+            </View>
             <Text
               style={{
-                textDecorationLine: "underline",
-                textDecorationStyle: "solid",
-                color: "#FF9228",
+                fontFamily: "DM Sans",
+                fontSize: 12,
+                fontWeight: "400",
+                width: "100%",
+                textAlign: "center",
+                marginTop: 16,
               }}
-              onPress={() => router.push("/(auth)/login/login")}
             >
-              Log in?
+              Already have an account?{" "}
+              <Text
+                style={{
+                  textDecorationLine: "underline",
+                  textDecorationStyle: "solid",
+                  color: "#FF9228",
+                }}
+                onPress={() => router.push("/(auth)/login/login")}
+              >
+                Log in?
+              </Text>
             </Text>
-          </Text>
+          </View>
         </ScrollView>
-      </Pressable>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 };
@@ -205,7 +275,6 @@ const styles = StyleSheet.create({
     color: "#0D014099",
     fontSize: 16,
   },
-
   buttonContainer: {
     display: "flex",
     flexDirection: "column",
