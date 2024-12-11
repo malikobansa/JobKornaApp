@@ -6,3 +6,4 @@ const client = new Client()
     .setPlatform('com.jobkorna.job');
 
 export const account = new Account(client);
+export const storage = new Storage(client);

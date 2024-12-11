@@ -7,14 +7,13 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
-import { account, Storage } from "../../constants/appwrite";
+import { account, storage } from "../../constants/appwrite";
 import JobBox from "@/components/JobBox";
 import tw from "twrnc";
 
 const Home = () => {
   const [fullName, setFullName] = useState();
-  const [avatarUrl, setAvatarUrl] = useState(null);  // Initialize Appwrite account instance
-  const storage = new Storage(); // Initialize Appwrite storage instance
+  const [avatarUrl, setAvatarUrl] = useState(null);  
 
   // Fetch user details from Appwrite
   useEffect(() => {
