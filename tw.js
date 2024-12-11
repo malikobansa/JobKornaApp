@@ -1,9 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./App/**/*.{js,jsx,ts,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+import { create } from "twrnc";
+
+const tw = create({
   theme: {
     extend: {
       colors: {
@@ -25,5 +22,6 @@ module.exports = {
       },
     },
   },
-  plugins: [],
-};
+});
+
+export default tw;
