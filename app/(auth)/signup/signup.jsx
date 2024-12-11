@@ -25,7 +25,6 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const [isChecked, setChecked] = useState(false);
 
   // Configure Google Sign-In
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -66,7 +65,6 @@ const Signup = () => {
 
   const handleGoogleSignIn = async (idToken) => {
     try {
-      // Use idToken to create OAuth2 session
       await account.createOAuth2Session("google", idToken);
       Alert.alert("Success", "Google Login successful!");
       router.push("/(main)/home");
@@ -136,26 +134,7 @@ const Signup = () => {
                 </View>
               </View>
             </View>
-            <View style={styles.forgottenPassword}>
-              <TouchableOpacity
-                style={styles.checkboxContainer}
-                onPress={() => setChecked(!isChecked)}
-              >
-                <View style={styles.checkbox}>
-                  {isChecked && (
-                    <Entypo name="check" size={20} color="#130160" />
-                  )}
-                </View>
-                <Text style={styles.rememberText}>Remember Me</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => router.push("/forgotpassword/forgotPassword")}
-              >
-                <Text style={{ color: "#130160", fontSize: 12 }}>
-                  Forgot Password?
-                </Text>
-              </TouchableOpacity>
-            </View>
+
             <View style={styles.buttonContainer}>
               <Pressable style={styles.signupBtn} onPress={handleSignup}>
                 <Text style={styles.signupText}>SIGN UP</Text>
@@ -172,14 +151,31 @@ const Signup = () => {
                 <Text style={styles.googleText}>SIGN UP WITH GOOGLE</Text>
               </Pressable>
             </View>
-            <Text style={styles.alreadyHaveAccount}>
-              Already have an account?{" "}
-              <Text
-                style={styles.loginLink}
-                onPress={() => router.push("/(auth)/login/login")}
-              >
-                Log in
-              </Text>
+            <Text
+              style={{
+                fontFamily: "DM Sans",
+                fontSize: 12,
+                fontWeight: "400",
+                width: "100%",
+                textAlign: "center",
+                marginTop: 16,
+              }}
+            >
+              You already have an account?{" "}
+              <Pressable onPress={() => router.push("/(auth)/login/login")}>
+                <Text
+                  style={{
+                    textDecorationLine: "underline",
+                    textDecorationStyle: "solid",
+                    color: "#FF9228",
+                    fontSize: 12,
+                    fontWeight: "400",
+                    fontFamily: "DM Sans",
+                  }}
+                >
+                  Log in?
+                </Text>
+              </Pressable>
             </Text>
           </View>
         </ScrollView>
