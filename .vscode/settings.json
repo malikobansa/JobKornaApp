@@ -1,3 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "cmake.sourceDirectory": "C:/Users/obansa/Desktop/ExpoProjects/jobkorna/node_modules/expo-modules-core/android"
 }

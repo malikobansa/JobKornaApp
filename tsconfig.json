@@ -3,15 +3,19 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "app/(tabs)/index.jsx", "app/(auth)/login/login.jsx"  ]
+    "expo-env.d.ts",
+    "app/(tabs)/indexjtsx",
+    "app/(auth)/login/index.tsx",
+    "app/(tabs)/index.jsx",
+    "app/(auth)/signup/signup.jsx",
+    "app/(auth)/login/login.jsx",
+    "app/(auth)/forgotpassword/forgotpassword.jsx"
+  ]
 }

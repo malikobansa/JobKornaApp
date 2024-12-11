@@ -5,11 +5,11 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Keyboard,
+  TouchableWithoutFeedback,
   Pressable,
   Image,
   Alert,
@@ -58,7 +58,7 @@ const Signup = () => {
       await account.updatePrefs({ name });
 
       Alert.alert("Success", "Account created successfully!");
-      router.push("/(auth)/login/login"); // Navigate to Login page
+      router.push("/(auth)/login/login");
     } catch (error) {
       Alert.alert("Error", error.message || "Something went wrong.");
     }
@@ -67,8 +67,8 @@ const Signup = () => {
   const handleGoogleSignIn = async (idToken) => {
     try {
       // Use idToken to create OAuth2 session
-      await account.createOAuth2Session("google", idToken);
-      Alert.alert("Success", "Google Login successful!");
+      const session = await account.createOAuth2Session("google", idToken);
+      Alert.alert("Success", "Google Login successful!", session);
       router.push("/(main)/home");
     } catch (error) {
       Alert.alert("Error", error.message || "Google Sign-In failed.");
@@ -192,12 +192,11 @@ export default Signup;
 
 
 const styles = StyleSheet.create({
-  // Same styles as before
   text: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 50,
+    marginTop: 80,
     textAlign: "center",
     width: "100%",
   },
@@ -206,7 +205,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   log: {
-    fontSize: 20,
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: 11,
   },
   form: {
     marginTop: 20,
@@ -248,31 +249,6 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#0D014099",
     fontSize: 16,
-  },
-  forgottenPassword: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    backgroundColor: "#E6E1FF",
-    borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#99ABC6",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 31,
-    elevation: 8,
-  },
-  checkboxContainer: {
-    flexDirection: "row",
-    gap: 15,
-    alignItems: "center",
   },
   buttonContainer: {
     display: "flex",

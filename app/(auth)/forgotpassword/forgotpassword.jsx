@@ -1,25 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
+  TextInput,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  TouchableWithoutFeedback,
   Keyboard,
   Pressable,
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { account } from "../../../constants/appwrite";
 
-const CheckEmail = () => {
+const ForgotPassword = () => {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+
+  const handlePasswordReset = async () => {
+    try {
+      await account.createRecovery(
+        email,
+        "https://your-redirect-url.com/reset-password" // Replace with your redirect URL
+      );
+      Alert.alert("Success", "A password reset email has been sent.");
+      router.push("/(auth)/check-email/checkEmail");
+    } catch (error) {
+      Alert.alert("Error", error.message || "Failed to send reset email.");
+    }
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1, backgroundColor: "#fff" }}
     >
-      <Pressable onPress={Keyboard.dismiss}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -29,10 +46,10 @@ const CheckEmail = () => {
         >
           {/* Header Section */}
           <View style={styles.text}>
-            <Text style={styles.title}>Check Your Email</Text>
+            <Text style={styles.title}>Forgot Password?</Text>
             <Text style={styles.subTitle}>
-              We have sent the reset password to the email address
-              brandonelouis@gmail.com
+              To reset your password, you need your email or mobile number that
+              can be authenticated
             </Text>
           </View>
           <View
@@ -44,71 +61,53 @@ const CheckEmail = () => {
             }}
           >
             <Image
-              source={require("@/assets/images/check-email.png")}
+              source={require("@/assets/images/forgot-password.png")}
               style={{ width: 118, height: 93, marginTop: 52 }}
             />
           </View>
-
+          <View>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Your Email"
+              onChangeText={(text) => setEmail(text)}
+              value={email}
+            />
+          </View>
           {/* Buttons */}
           <View style={styles.buttonContainer}>
-            <Pressable
-              style={styles.resetBtn}
-              onPress={() => router.push("/(auth)/success/success")}
-            >
+            <Pressable style={styles.resetBtn}>
               <Text
                 style={{
                   color: "#fff",
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
+                onPress={handlePasswordReset}
               >
-                Open your email
+                Reset Password
               </Text>
             </Pressable>
-            <Pressable
-              style={styles.backtologinBtn}
-              onPress={() => router.push("/(auth)/login/login")}
-            >
+            <Pressable style={styles.backtologinBtn}>
               <Text
                 style={{
                   color: "#fff",
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
+                onPress={() => router.push("/(auth)/login/login")}
               >
                 Back to Login
               </Text>
             </Pressable>
           </View>
-          <Text
-            style={{
-              fontFamily: "DM Sans",
-              fontSize: 12,
-              fontWeight: "400",
-              width: "100%",
-              textAlign: "center",
-              marginTop: 30,
-            }}
-          >
-            You haven't received an email yet?{" "}
-            <Text
-              style={{
-                textDecorationLine: "underline",
-                textDecorationStyle: "solid",
-                color: "#FF9228",
-              }}
-              onPress={() => router.push("/(auth)/signup/signup")}
-            >
-              Resend email?
-            </Text>
-          </Text>
         </ScrollView>
-      </Pressable>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 };
 
-export default CheckEmail;
+export default ForgotPassword;
 
 const styles = StyleSheet.create({
   text: {
@@ -152,13 +151,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 19,
+    gap: 29,
     alignItems: "center",
     width: "100%",
-    marginTop: 94,
+    marginTop: 29,
+    width: "100%",
   },
   resetBtn: {
-    width: 266,
+    width: "100%",
     paddingVertical: 16,
     backgroundColor: "#130160",
     borderRadius: 6,
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   backtologinBtn: {
-    width: 266,
+    width: "100%",
     paddingVertical: 16,
     backgroundColor: "#D6CDFE",
     borderRadius: 6,
