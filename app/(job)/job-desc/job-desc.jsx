@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Text, View, ScrollView, Image, Pressable } from "react-native";
 import tw from "../../../tw";
 import { JobRequirements, JobFacilities } from "@/components/JobData";
+import Button from "../../../components/Button";
 
 const jobInformationData = [
   {
@@ -256,7 +257,7 @@ const JobDesc = () => {
             <Text
               style={tw`text-[#150B3D] font-bold text-[14px] leading-[18.23px]`}
             >
-              Job Description
+              About Company
             </Text>
             <Text
               style={tw`text-[#524B6B] text-[12px] font-normal leading-[15.62px] mt-4 w-full`}
@@ -300,15 +301,7 @@ const JobDesc = () => {
           />
         </Pressable>
         {/* Apply Now Btn */}
-        <Pressable
-          style={tw`px-[92px] py-4 rounded-[6px] bg-[#130160] mt-[30px]`}
-        >
-          <Text
-            style={tw`text-white text-[14px] font-bold leading-[18.23px] tracking-[6%] uppercase`}
-          >
-            Apply Now
-          </Text>
-        </Pressable>
+        <Button style="primary" text="Apply Now" addStyles="w-full" />
       </View>
     </ScrollView>
   );
