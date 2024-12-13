@@ -4,30 +4,34 @@ import {
   View,
   ScrollView,
   Image,
-  Pressable,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { account, storage } from "../../constants/appwrite";
 import JobBox from "@/components/JobBox";
 import tw from "twrnc";
 
 const Home = () => {
-  const [fullName, setFullName] = useState();
-  const [avatarUrl, setAvatarUrl] = useState(null);  
+  const [fullName, setFullName] = useState('user'); // Default username
+  const [avatarUrl, setAvatarUrl] = useState(null);
 
   // Fetch user details from Appwrite
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const user = await account.get();
-        setFullName(user.name); // Set user's full name
-        // If user has a custom avatar, set it
+        // Access name directly from the user object returned by account.get()
+        setFullName(user.name || 'user'); // Handle potential undefined value
+
+        // Set avatar URL if it exists in user preferences
         if (user.prefs?.avatar) {
           const fileUrl = storage.getFileView("6757413c000e95b3ba5d", user.prefs.avatar);
           setAvatarUrl(fileUrl.href);
         }
       } catch (error) {
         console.error("Failed to fetch user details:", error);
+        // Optionally handle the error state here
+        // setFullName('user'); // Fallback to default if fetch fails
       }
     };
 
@@ -36,22 +40,23 @@ const Home = () => {
 
   const handleAvatarUpdate = async () => {
     try {
-      // Use a file picker to select the new avatar (implement separately)
-      const newAvatar = await pickImage(); // Placeholder for an image picker function
+      const newAvatar = await pickImage(); // Placeholder for a file picker function
 
-      // Upload new avatar to Appwrite storage
       const uploadedFile = await storage.createFile(
         "6757413c000e95b3ba5d",
-        newAvatar.file, // File object
-        newAvatar.name // File name
+        newAvatar.file,
+        newAvatar.name
       );
 
-      // Update user's preferences with the new avatar ID
+      // Update user preferences with new avatar ID
       await account.updatePrefs({ avatar: uploadedFile.$id });
+      
+      // Update avatar URL in the UI
       const fileUrl = storage.getFileView("6757413c000e95b3ba5d", uploadedFile.$id);
       setAvatarUrl(fileUrl.href);
     } catch (error) {
       console.error("Failed to update avatar:", error);
+      // Optionally handle the error state here, perhaps with a user notification
     }
   };
 
@@ -60,7 +65,9 @@ const Home = () => {
       {/* Header */}
       <View style={tw`w-full`}>
         <View style={tw`flex flex-row items-start justify-between w-full`}>
-          <Text>Hello, {"\n"}{fullName}.</Text>
+          <Text style={tw`text-black`}>
+            Hello, {"\n"}<Text style={tw`font-bold`}>{fullName}</Text>.
+          </Text>
           <TouchableOpacity onPress={handleAvatarUpdate}>
             <Image
               source={
@@ -72,70 +79,59 @@ const Home = () => {
             />
           </TouchableOpacity>
         </View>
+        {/* Promotional Section */}
         <View
-          style={tw`bg-primaryBlue flex-row items-center justify-between px-[17px] py-[31px] rounded-[6px] h-[183px] w-full`}
+          style={tw`bg-blue-700 flex-row items-center justify-between px-[17px] py-[31px] rounded-[6px] h-[183px] w-full mt-10`}
         >
           <View style={tw`flex-col items-start gap-[18px]`}>
             <Text style={tw`text-white text-[18px] leading-[23.44px]`}>
               50% off {"\n"}take any courses
             </Text>
-            <Pressable style={tw`bg-secOrange rounded-[6px] px-[17px] py-[5px]`}>
-              <Text>Join now</Text>
+            <Pressable style={tw`bg-orange-400 rounded-[6px] px-[17px] py-[5px]`}>
+              <Text style={tw`text-white text-base`}>Join now</Text>
             </Pressable>
           </View>
           <Image
             source={require("@/assets/images/woman.png")}
-            style={tw`object-contain mr-[10px] mt-40 z-10`}
+            style={tw`h-80 mr-[10px] size-50 -mt-10 z-10`}
           />
         </View>
       </View>
-      {/* Find Your Job */}
+      {/* Job Section */}
       <View style={tw`flex-col gap-[24px] items-start w-full`}>
-        <Text style={tw`text-black font-bold text-[16px] leading-[20px]`}>
+        <Text style={tw`text-black font-bold text-[20px] leading-[20px] mt-10`}>
           Find Your Job
         </Text>
         <View style={tw`flex-row items-center gap-5 w-full`}>
           <TouchableOpacity
-            style={tw`bg-cyan py-[38px] px-[36px] rounded-[6px] flex-col items-center gap-[6px]`}
+            style={tw`bg-cyan-400 py-[38px] px-[36px] rounded-[6px] flex-col items-center gap-[6px]`}
           >
             <Image source={require("@/assets/images/headhunting.png")} />
-            <Text
-              style={tw`text-primaryBlue text-[16px] leading-[20px] font-bold mt-[8px]`}
-            >
+            <Text style={tw`text-primaryBlue text-[16px] leading-[20px] font-bold mt-[8px]`}>
               44.5k
             </Text>
-            <Text
-              style={tw`text-primaryBlue text-[14px] leading-[18px] font-normal`}
-            >
+            <Text style={tw`text-primaryBlue text-[14px] leading-[18px] font-normal`}>
               Remote Jobs
             </Text>
           </TouchableOpacity>
           <View style={tw`flex-col justify-between gap-5`}>
             <TouchableOpacity
-              style={tw`bg-lilac py-[16px] px-[36px] rounded-[6px] flex-col items-center`}
+              style={tw`bg-purple-300 py-[16px] px-[36px] rounded-[6px] flex-col items-center`}
             >
-              <Text
-                style={tw`text-primaryBlue text-[16px] leading-[20px] font-bold mt-[8px]`}
-              >
+              <Text style={tw`text-primaryBlue text-[16px] leading-[20px] font-bold mt-[8px]`}>
                 66.8k
               </Text>
-              <Text
-                style={tw`text-primaryBlue text-[14px] leading-[18px] font-normal`}
-              >
+              <Text style={tw`text-primaryBlue text-[14px] leading-[18px] font-normal`}>
                 Full Time
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={tw`bg-paleOrange py-[16px] px-[36px] rounded-[6px] flex-col items-center`}
+              style={tw`bg-orange-200 py-[16px] px-[36px] rounded-[6px] flex-col items-center`}
             >
-              <Text
-                style={tw`text-primaryBlue text-[16px] leading-[20px] font-bold mt-[8px]`}
-              >
+              <Text style={tw`text-primaryBlue text-[16px] leading-[20px] font-bold mt-[8px]`}>
                 38.9k
               </Text>
-              <Text
-                style={tw`text-primaryBlue text-[14px] leading-[18px] font-normal`}
-              >
+              <Text style={tw`text-primaryBlue text-[14px] leading-[18px] font-normal`}>
                 Part Time
               </Text>
             </TouchableOpacity>
