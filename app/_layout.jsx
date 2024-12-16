@@ -13,7 +13,7 @@ export default function Layout() {
               {
                 translateX: current.progress.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [layouts.screen.width, 0], // Slide effect
+                  outputRange: [layouts.screen.width, 0],
                 }),
               },
             ],

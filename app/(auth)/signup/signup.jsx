@@ -25,7 +25,6 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const [isChecked, setChecked] = useState(false);
 
   // Configure Google Sign-In
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -53,7 +52,7 @@ const Signup = () => {
     try {
       // Create a new user
       await account.create("unique()", email, password);
-      
+
       // Optionally update preferences with name
       await account.updatePrefs({ name });
 
@@ -66,9 +65,8 @@ const Signup = () => {
 
   const handleGoogleSignIn = async (idToken) => {
     try {
-      // Use idToken to create OAuth2 session
-      const session = await account.createOAuth2Session("google", idToken);
-      Alert.alert("Success", "Google Login successful!", session);
+      await account.createOAuth2Session("google", idToken);
+      Alert.alert("Success", "Google Login successful!");
       router.push("/(main)/home");
     } catch (error) {
       Alert.alert("Error", error.message || "Google Sign-In failed.");
@@ -190,7 +188,6 @@ const Signup = () => {
 
 export default Signup;
 
-
 const styles = StyleSheet.create({
   text: {
     display: "flex",
@@ -267,8 +264,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   signupText: {
-    color: '#fff',
-    fontSize: 17
+    color: "#fff",
+    fontSize: 17,
+  },
+  signupText: {
+    color: "#fff",
+    fontSize: 17,
   },
   googleBtn: {
     width: 266,
@@ -281,6 +282,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   googleText: {
-    color:'#fff'
-  }
+    color: "#fff",
+  },
 });

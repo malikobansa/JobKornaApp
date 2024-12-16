@@ -226,6 +226,9 @@ const Login = () => {
                     textDecorationLine: "underline",
                     textDecorationStyle: "solid",
                     color: "#FF9228",
+                    fontSize: 12,
+                    fontWeight: "400",
+                    fontFamily: "DM Sans",
                   }}
                 >
                   Sign up?

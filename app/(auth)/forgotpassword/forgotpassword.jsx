@@ -22,8 +22,7 @@ const ForgotPassword = () => {
   const handlePasswordReset = async () => {
     try {
       await account.createRecovery(
-        email,
-        "https://your-redirect-url.com/reset-password" // Replace with your redirect URL
+        email, // Replace with your redirect URL
       );
       Alert.alert("Success", "A password reset email has been sent.");
       router.push("/(auth)/check-email/checkEmail");

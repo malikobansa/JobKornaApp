@@ -9,58 +9,96 @@ import {
 } from "react-native";
 import { account, storage } from "../../constants/appwrite";
 import JobBox from "@/components/JobBox";
-import tw from "twrnc";
+import tw from "../../tw.js";
+import * as ImagePicker from "expo-image-picker";
+import { storage } from "../../constants/appwrite"; // Adjust import based on your Appwrite configuration
+import { ID } from "appwrite";
 
 const Home = () => {
-  const [fullName, setFullName] = useState();
-  const [avatarUrl, setAvatarUrl] = useState(null);  
+  const [imageUri, setImageUri] = useState(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
 
-  // Fetch user details from Appwrite
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        const user = await account.get();
-        setFullName(user.name); // Set user's full name
-        // If user has a custom avatar, set it
-        if (user.prefs?.avatar) {
-          const fileUrl = storage.getFileView("6757413c000e95b3ba5d", user.prefs.avatar);
-          setAvatarUrl(fileUrl.href);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user details:", error);
-      }
-    };
+  const pickImage = async () => {
+    // Ask for permission to access media library
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    fetchUserDetails();
-  }, []);
-
-  const handleAvatarUpdate = async () => {
-    try {
-      // Use a file picker to select the new avatar (implement separately)
-      const newAvatar = await pickImage(); // Placeholder for an image picker function
-
-      // Upload new avatar to Appwrite storage
-      const uploadedFile = await storage.createFile(
-        "6757413c000e95b3ba5d",
-        newAvatar.file, // File object
-        newAvatar.name // File name
+    if (!permissionResult.granted) {
+      Alert.alert(
+        "Permission Denied",
+        "You need to grant media library access."
       );
+      return;
+    }
 
-      // Update user's preferences with the new avatar ID
-      await account.updatePrefs({ avatar: uploadedFile.$id });
-      const fileUrl = storage.getFileView("6757413c000e95b3ba5d", uploadedFile.$id);
-      setAvatarUrl(fileUrl.href);
-    } catch (error) {
-      console.error("Failed to update avatar:", error);
+    // Launch the image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setImageUri(result.uri);
     }
   };
 
+  const uploadToStorage = async () => {
+    if (!imageUri) {
+      Alert.alert("Error", "Please select an image first.");
+      return;
+    }
+
+    const fileUri = imageUri.split("/").pop(); // Get the file name
+    const fileBlob = await fetch(imageUri).then((res) => res.blob()); // Convert to blob
+
+    try {
+      // Upload file to Appwrite storage
+      const response = await storage.createFile(
+        "6757413c000e95b3ba5d", // Replace with your Appwrite storage bucket ID
+        ID.unique(),
+        fileBlob,
+        [`file/${fileUri}`]
+      );
+
+      // Generate a preview URL
+      const previewUrl = storage.getFilePreview(
+        "6757413c000e95b3ba5d",
+        response.$id
+      );
+      setUploadedImageUrl(previewUrl);
+      Alert.alert("Success", "Image uploaded successfully!");
+    } catch (error) {
+      Alert.alert("Error", error.message || "Something went wrong.");
+    }
+  };
+  {
+    /* <Text style={styles.title}>Upload a Picture</Text>
+      <TouchableOpacity style={styles.button} onPress={pickImage}>
+        <Text style={styles.buttonText}>Pick an Image</Text>
+      </TouchableOpacity>
+      {imageUri && <Image source={{ uri: imageUri }} style={styles.preview} />}
+      <TouchableOpacity style={styles.uploadButton} onPress={uploadToStorage}>
+        <Text style={styles.buttonText}>Upload Image</Text>
+      </TouchableOpacity>
+      {uploadedImageUrl ? (
+        <Image
+          source={{ uri: uploadedImageUrl }}
+          style={styles.uploadedImage}
+          resizeMode="contain"
+        />
+      ) : null} */
+  }
+
   return (
-    <ScrollView style={tw`pt-[45px] px-[23px] flex flex-col gap-6 w-full`}>
+    <ScrollView style={tw`pt-[55px] px-[23px] flex flex-col gap-6 w-full`}>
       {/* Header */}
       <View style={tw`w-full`}>
         <View style={tw`flex flex-row items-start justify-between w-full`}>
-          <Text>Hello, {"\n"}{fullName}.</Text>
+          <Text>
+            Hello, {"\n"}
+            {fullName}.
+          </Text>
           <TouchableOpacity onPress={handleAvatarUpdate}>
             <Image
               source={
@@ -79,62 +117,100 @@ const Home = () => {
             <Text style={tw`text-white text-[18px] leading-[23.44px]`}>
               50% off {"\n"}take any courses
             </Text>
-            <Pressable style={tw`bg-secOrange rounded-[6px] px-[17px] py-[5px]`}>
-              <Text>Join now</Text>
+            <Pressable
+              style={[
+                tw`rounded-[6px] px-[17px] py-[5px]`,
+                { backgroundColor: "#FF9228" },
+              ]}
+            >
+              <Text style={tw`font-medium text-[15px] text-white`}>
+                Join now
+              </Text>
             </Pressable>
           </View>
           <Image
             source={require("@/assets/images/woman.png")}
-            style={tw`object-contain mr-[10px] mt-40 z-10`}
+            style={tw`absolute bottom-0 right-0 w-[130px] h-[170px]  mr-[10px] z-20`}
           />
         </View>
       </View>
+
       {/* Find Your Job */}
-      <View style={tw`flex-col gap-[24px] items-start w-full`}>
+      <View style={tw`flex-col gap-[16px] items-start mt-6 w-full`}>
         <Text style={tw`text-black font-bold text-[16px] leading-[20px]`}>
           Find Your Job
         </Text>
-        <View style={tw`flex-row items-center gap-5 w-full`}>
+        <View style={tw`flex-row items-stretch justify-between w-full`}>
           <TouchableOpacity
-            style={tw`bg-cyan py-[38px] px-[36px] rounded-[6px] flex-col items-center gap-[6px]`}
+            style={[
+              tw`py-[38px] px-[36px] rounded-[6px] flex-col items-center gap-[6px]`,
+              { backgroundColor: "#AFECFE" },
+            ]}
           >
-            <Image source={require("@/assets/images/headhunting.png")} />
+            <Image
+              source={require("@/assets/images/headhunting.png")}
+              style={tw`w-[34px] h-[34px]`}
+            />
             <Text
-              style={tw`text-primaryBlue text-[16px] leading-[20px] font-bold mt-[8px]`}
+              style={[
+                tw`text-[16px] leading-[20px] font-bold mt-[8px]`,
+                { color: "#0D0140" },
+              ]}
             >
               44.5k
             </Text>
             <Text
-              style={tw`text-primaryBlue text-[14px] leading-[18px] font-normal`}
+              style={[
+                tw`text-[14px] leading-[18px] font-normal`,
+                { color: "#0D0140" },
+              ]}
             >
               Remote Jobs
             </Text>
           </TouchableOpacity>
-          <View style={tw`flex-col justify-between gap-5`}>
+          <View style={tw`flex flex-col gap-5`}>
             <TouchableOpacity
-              style={tw`bg-lilac py-[16px] px-[36px] rounded-[6px] flex-col items-center`}
+              style={[
+                tw`py-[16px] px-[36px] rounded-[6px] flex-col items-center w-[156px]`,
+                { backgroundColor: "#BEAFFE" },
+              ]}
             >
               <Text
-                style={tw`text-primaryBlue text-[16px] leading-[20px] font-bold mt-[8px]`}
+                style={[
+                  tw`text-[16px] leading-[20px] font-bold mt-[8px]`,
+                  { color: "#0D0140" },
+                ]}
               >
                 66.8k
               </Text>
               <Text
-                style={tw`text-primaryBlue text-[14px] leading-[18px] font-normal`}
+                style={[
+                  tw`text-[14px] leading-[18px] font-normal`,
+                  { color: "#0D0140" },
+                ]}
               >
                 Full Time
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={tw`bg-paleOrange py-[16px] px-[36px] rounded-[6px] flex-col items-center`}
+              style={[
+                tw`py-[16px] px-[36px] rounded-[6px] flex-col items-center`,
+                { backgroundColor: "#FFD6AD" },
+              ]}
             >
               <Text
-                style={tw`text-primaryBlue text-[16px] leading-[20px] font-bold mt-[8px]`}
+                style={[
+                  tw`text-[16px] leading-[20px] font-bold mt-[8px]`,
+                  { color: "#0D0140" },
+                ]}
               >
                 38.9k
               </Text>
               <Text
-                style={tw`text-primaryBlue text-[14px] leading-[18px] font-normal`}
+                style={[
+                  tw`text-[14px] leading-[18px] font-normal`,
+                  { color: "#0D0140" },
+                ]}
               >
                 Part Time
               </Text>
@@ -142,10 +218,16 @@ const Home = () => {
           </View>
         </View>
       </View>
+
       {/* Recent Job List */}
-      <View style={tw`flex flex-col items-start gap-4 w-full`}>
-        <Text style={tw`text-darkerBlue font-bold text-[16px] leading-[20px]`}>
-          Remote Job List
+      <View style={tw`flex-col items-start gap-4 mt-5 w-full`}>
+        <Text
+          style={[
+            tw`font-bold text-[16px] leading-[20px]`,
+            { color: "#150B3D" },
+          ]}
+        >
+          Recent Job List
         </Text>
         <JobBox />
       </View>
