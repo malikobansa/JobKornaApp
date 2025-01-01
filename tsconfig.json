@@ -13,9 +13,9 @@
     "expo-env.d.ts",
     "app/(tabs)/indexjtsx",
     "app/(auth)/login/index.tsx",
-    "app/(tabs)/index.jsx",
-    "app/(auth)/signup/signup.jsx",
-    "app/(auth)/login/login.jsx",
-    "app/(auth)/forgotpassword/forgotpassword.jsx"
-  ]
+    "app/(tabs)/index.tsx",
+    "app/(auth)/signup/signup.tsx",
+    "app/(auth)/login/login.tsx",
+    "app/(auth)/forgotpassword/forgotpassword.tsx"
+, "app/(main)/home.jsx"  ]
 }

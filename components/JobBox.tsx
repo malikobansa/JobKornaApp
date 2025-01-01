@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, Pressable, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import { View, Image, Text, Pressable, StyleSheet, ActivityIndicator, ScrollView, Linking } from "react-native";
 import { useRouter } from "expo-router";
-import tw from 'twrnc'
 
-const JobBox = () => {
+type Job = {
+  job_id?: string;
+  job_title?: string;
+  employer_name?: string;
+  employer_logo?: string;
+  job_city?: string;
+  job_country?: string;
+  job_employment_type?: string;
+  job_salary?: string;
+  job_description?: string;
+  job_highlights?: string;
+  job_requirements?: string;
+  job_posted_at?: string;
+  job_apply_link?: string;
+};
+
+const JobBox: React.FC = () => {
   const router = useRouter();
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -37,28 +52,22 @@ const JobBox = () => {
     fetchJobs();
   }, []);
 
-  const handleJobPress = (job) => {
+  const handleJobPress = (job: Job) => {
     router.push({
-      pathname: "/(job)/view-job/[id]",
+      pathname: "/(job)/view-job/view-job",
       params: {
-        id: job.job_id || 'undefined',
-        jobData: JSON.stringify({
-          job_id: job.job_id,
-          job_title: job.job_title,
-          employer_name: job.employer_name,
-          employer_logo: job.employer_logo,
-          job_city: job.job_city,
-          job_country: job.job_country,
-          job_employment_type: job.job_employment_type,
-          job_salary: job.job_salary,
-          job_description: job.job_description,
-          job_highlights: job.job_highlights,
-          job_requirements: job.job_requirements,
-          job_posted_at: job.job_posted_at,
-          job_apply_link: job.job_apply_link
-        })
-      }
+        id: job.job_id || "undefined",
+        jobData: JSON.stringify(job),
+      },
     });
+  };
+
+  const handleApplyPress = (applyLink: string | undefined) => {
+    if (applyLink) {
+      Linking.openURL(applyLink).catch((err) => console.error("Failed to open link:", err));
+    } else {
+      alert("No application link available for this job.");
+    }
   };
 
   if (loading) {
@@ -109,7 +118,10 @@ const JobBox = () => {
               <View style={styles.tag}>
                 <Text>{job.job_employment_type || "N/A"}</Text>
               </View>
-              <Pressable style={styles.applyTag}>
+              <Pressable
+                style={styles.applyTag}
+                onPress={() => handleApplyPress(job.job_apply_link)}
+              >
                 <Text>Apply</Text>
               </Pressable>
             </View>

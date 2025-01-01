@@ -10,7 +10,7 @@ import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useRouter } from "expo-router";
 
-const Index = () => {
+const Index: React.FC = () => {
   const router = useRouter();
   return (
     <ScrollView style={{ backgroundColor: "#fff" }}>

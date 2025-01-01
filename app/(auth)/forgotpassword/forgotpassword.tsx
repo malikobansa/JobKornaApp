@@ -11,25 +11,28 @@ import {
   Keyboard,
   Pressable,
   Image,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { account } from "../../../constants/appwrite";
 
-const ForgotPassword = () => {
+const ForgotPassword: React.FC = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState<string>("");
 
   const handlePasswordReset = async () => {
     try {
       await account.createRecovery(
-        email, // Replace with your redirect URL
+        email,
+        "https://your-redirect-url.com/reset-password" // Replace with your redirect URL
       );
       Alert.alert("Success", "A password reset email has been sent.");
       router.push("/(auth)/check-email/checkEmail");
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to send reset email.");
     }
   };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -40,7 +43,7 @@ const ForgotPassword = () => {
           contentContainerStyle={{
             flexGrow: 1,
             paddingHorizontal: 20,
-            justifyContent: "justify-between",
+            justifyContent: "space-between",
           }}
         >
           {/* Header Section */}
@@ -75,26 +78,27 @@ const ForgotPassword = () => {
           </View>
           {/* Buttons */}
           <View style={styles.buttonContainer}>
-            <Pressable style={styles.resetBtn}>
+            <Pressable style={styles.resetBtn} onPress={handlePasswordReset}>
               <Text
                 style={{
                   color: "#fff",
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
-                onPress={handlePasswordReset}
               >
                 Reset Password
               </Text>
             </Pressable>
-            <Pressable style={styles.backtologinBtn}>
+            <Pressable
+              style={styles.backtologinBtn}
+              onPress={() => router.push("/(auth)/login/login")}
+            >
               <Text
                 style={{
                   color: "#fff",
                   fontSize: 14,
                   textTransform: "uppercase",
                 }}
-                onPress={() => router.push("/(auth)/login/login")}
               >
                 Back to Login
               </Text>
@@ -129,7 +133,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 20,
-    fontWeight: 600,
+    fontWeight: "600",
     color: "#0D0140",
     marginBottom: 10,
     marginTop: 72,
@@ -154,7 +158,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     marginTop: 29,
-    width: "100%",
   },
   resetBtn: {
     width: "100%",

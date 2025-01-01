@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
-const CheckEmail = () => {
+const CheckEmail: React.FC = () => {
   const router = useRouter();
   return (
     <KeyboardAvoidingView
@@ -24,7 +24,7 @@ const CheckEmail = () => {
           contentContainerStyle={{
             flexGrow: 1,
             paddingHorizontal: 20,
-            justifyContent: "justify-between",
+            justifyContent: "space-between",
           }}
         >
           {/* Header Section */}
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 20,
-    fontWeight: 600,
+    fontWeight: "600",
     color: "#0D0140",
     marginBottom: 10,
     marginTop: 72,

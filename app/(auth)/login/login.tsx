@@ -19,18 +19,17 @@ import { useRouter } from "expo-router";
 import { account } from "../../../constants/appwrite";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
-import { useAuthRequest, makeRedirectUri } from "expo-auth-session";
 
 // Configure WebBrowser for authentication
 WebBrowser.maybeCompleteAuthSession();
 
-const Login = () => {
+const Login: React.FC = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const [isChecked, setChecked] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isPasswordVisible, setPasswordVisible] = useState<boolean>(false);
+  const [isChecked, setChecked] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [request, response, promptAsync] = AuthSession.useAuthRequest({
     clientId:
@@ -42,20 +41,18 @@ const Login = () => {
     responseType: "token",
   });
 
-  console.log(AuthSession);
-
   React.useEffect(() => {
     if (response?.type === "success") {
       handleGoogleSignIn(response.params.access_token);
     }
   }, [response]);
 
-  const handleGoogleSignIn = async (accessToken) => {
+  const handleGoogleSignIn = async (accessToken: string) => {
     try {
       const session = await account.createOAuth2Session("google", accessToken);
       Alert.alert("Success", "Google Login successful!", session);
       router.push("/(main)/home");
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Error", error.message || "Google Sign-In failed.");
     }
   };
@@ -69,7 +66,7 @@ const Login = () => {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
-  
+
     try {
       // Check if there's an active session
       const currentSession = await account.get();
@@ -82,17 +79,17 @@ const Login = () => {
       // If there's no active session, proceed with login
       console.log("No active session found, proceeding with login...");
     }
-  
+
     try {
       const session = await account.createEmailPasswordSession(email, password);
       console.log("Login successful:", session);
       router.push("/(main)/home");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during login:", error.message);
       Alert.alert("Error", error.message || "Login failed");
     }
   };
-  
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -191,7 +188,7 @@ const Login = () => {
               </Pressable>
               <Pressable
                 style={styles.googleBtn}
-                onPress={handleGoogleSignIn}
+                onPress={() => promptAsync()}
                 disabled={!request}
               >
                 <Image
@@ -242,7 +239,6 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
-  // Add styles here as in the original code
   text: {
     display: "flex",
     alignItems: "center",
@@ -266,7 +262,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 20,
-    fontWeight: 600,
+    fontWeight: "600",
     color: "#0D0140",
     marginBottom: 10,
   },

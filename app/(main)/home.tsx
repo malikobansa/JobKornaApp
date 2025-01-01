@@ -10,10 +10,11 @@ import {
 import { account, storage } from "../../constants/appwrite";
 import JobBox from "@/components/JobBox";
 import tw from "twrnc";
+import TabLayout from "../(tabs)/_layout";
 
-const Home = () => {
-  const [fullName, setFullName] = useState('user'); // Default username
-  const [avatarUrl, setAvatarUrl] = useState(null);
+const Home: React.FC = () => {
+  const [fullName, setFullName] = useState<string>('user'); // Default username
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   // Fetch user details from Appwrite
   useEffect(() => {
@@ -145,6 +146,7 @@ const Home = () => {
         </Text>
         <JobBox />
       </View>
+      <TabLayout/>
     </ScrollView>
   );
 };

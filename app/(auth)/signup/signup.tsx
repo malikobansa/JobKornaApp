@@ -19,13 +19,13 @@ import { useRouter } from "expo-router";
 import { account } from "../../../constants/appwrite";
 import * as Google from "expo-auth-session/providers/google";
 
-const Signup = () => {
+const Signup: React.FC = () => {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const [isChecked, setChecked] = useState(false);
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isPasswordVisible, setPasswordVisible] = useState<boolean>(false);
+  const [isChecked, setChecked] = useState<boolean>(false);
 
   // Configure Google Sign-In
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -59,18 +59,18 @@ const Signup = () => {
 
       Alert.alert("Success", "Account created successfully!");
       router.push("/(auth)/login/login");
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Error", error.message || "Something went wrong.");
     }
   };
 
-  const handleGoogleSignIn = async (idToken) => {
+  const handleGoogleSignIn = async (idToken: string) => {
     try {
       // Use idToken to create OAuth2 session
       const session = await account.createOAuth2Session("google", idToken);
       Alert.alert("Success", "Google Login successful!", session);
       router.push("/(main)/home");
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Error", error.message || "Google Sign-In failed.");
     }
   };
@@ -190,7 +190,6 @@ const Signup = () => {
 
 export default Signup;
 
-
 const styles = StyleSheet.create({
   text: {
     display: "flex",
@@ -214,7 +213,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 20,
-    fontWeight: 600,
+    fontWeight: "600",
     color: "#0D0140",
     marginBottom: 10,
   },
@@ -267,8 +266,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   signupText: {
-    color: '#fff',
-    fontSize: 17
+    color: "#fff",
+    fontSize: 17,
   },
   googleBtn: {
     width: 266,
@@ -281,6 +280,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   googleText: {
-    color:'#fff'
-  }
+    color: "#fff",
+  },
 });
