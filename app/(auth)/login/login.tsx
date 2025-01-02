@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -31,29 +31,38 @@ const Login: React.FC = () => {
   const [isChecked, setChecked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [request, response, promptAsync] = AuthSession.useAuthRequest({
-    clientId:
-      "11314065032-jcudl9tg7t5lfgqqtf6en17i4qt9fakp.apps.googleusercontent.com",
-    redirectUri: AuthSession.makeRedirectUri({
-      native: "com.jobkorna://oauthredirect",
-    }),
-    scopes: ["openid", "profile", "email"],
-    responseType: "token",
-  });
+  const [request, response, promptAsync] = AuthSession.useAuthRequest(
+    {
+      clientId: "11314065032-jcudl9tg7t5lfgqqtf6en17i4qt9fakp.apps.googleusercontent.com",
+      redirectUri: AuthSession.makeRedirectUri({
+        native: "https://cloud.appwrite.io/v1/account/sessions/oauth2/callback/google/6755f48e002e21543eea",
+      }),
+      scopes: ["openid", "profile", "email"],
+      responseType: "id_token",
+    },
+    {
+      authorizationEndpoint: "https://accounts.google.com/o/oauth2/v2/auth",
+      tokenEndpoint: "https://oauth2.googleapis.com/token",
+    }
+  );
 
-  React.useEffect(() => {
-    if (response?.type === "success") {
-      handleGoogleSignIn(response.params.access_token);
+  useEffect(() => {
+    if (response?.type === "success" && response.params?.id_token) {
+      handleGoogleSignIn(response.params.id_token);
     }
   }, [response]);
 
-  const handleGoogleSignIn = async (accessToken: string) => {
+  const handleGoogleSignIn = async (idToken: string) => {
     try {
-      const session = await account.createOAuth2Session("google", accessToken);
-      Alert.alert("Success", "Google Login successful!", session);
+      setLoading(true);
+      await account.createOAuth2Session("google", idToken);
+      Alert.alert("Success", "Google Login successful!");
       router.push("/(main)/home");
     } catch (error: any) {
+      console.error("Google Sign-In error:", error);
       Alert.alert("Error", error.message || "Google Sign-In failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,6 +77,7 @@ const Login: React.FC = () => {
     }
 
     try {
+      setLoading(true);
       // Check if there's an active session
       const currentSession = await account.get();
       if (currentSession) {
@@ -87,21 +97,18 @@ const Login: React.FC = () => {
     } catch (error: any) {
       console.error("Error during login:", error.message);
       Alert.alert("Error", error.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+      style={styles.container}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            paddingHorizontal: 20,
-          }}
-        >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View>
             {/* Header Section */}
             <View style={styles.text}>
@@ -145,6 +152,8 @@ const Login: React.FC = () => {
                 </View>
               </View>
             </View>
+
+            {/* Additional Options */}
             <View style={styles.forgottenPassword}>
               <TouchableOpacity
                 style={styles.checkboxContainer}
@@ -155,78 +164,40 @@ const Login: React.FC = () => {
                     <Entypo name="check" size={20} color="#130160" />
                   )}
                 </View>
-                <Text
-                  style={{
-                    fontWeight: "400",
-                    fontSize: 12,
-                    color: "#AAA6B9",
-                  }}
-                >
-                  Remember Me
-                </Text>
+                <Text style={styles.rememberMeText}>Remember Me</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => router.push("/forgotpassword/forgotPassword")}
               >
-                <Text style={{ color: "#130160", fontSize: 12 }}>
-                  Forgot Password?
-                </Text>
+                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
             </View>
+
             {/* Buttons */}
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.loginBtn} onPress={handleLogin}>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontSize: 14,
-                    textTransform: "uppercase",
-                  }}
-                >
+              <Pressable style={styles.loginBtn} onPress={handleLogin} disabled={loading}>
+                <Text style={styles.loginBtnText}>
                   {loading ? "Loading..." : "Login"}
                 </Text>
               </Pressable>
               <Pressable
                 style={styles.googleBtn}
                 onPress={() => promptAsync()}
-                disabled={!request}
+                disabled={loading}
               >
                 <Image
                   source={require("@/assets/images/google-icon.png")}
-                  style={{ width: 20, height: 20 }}
+                  style={styles.googleIcon}
                 />
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontSize: 14,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Sign in with Google
-                </Text>
+                <Text style={styles.googleBtnText}>Sign in with Google</Text>
               </Pressable>
             </View>
-            <Text
-              style={{
-                fontFamily: "DM Sans",
-                fontSize: 12,
-                fontWeight: "400",
-                width: "100%",
-                textAlign: "center",
-                marginTop: 16,
-              }}
-            >
+
+            {/* Sign-Up Redirect */}
+            <Text style={styles.signupPrompt}>
               You don't have an account yet?{" "}
               <Pressable onPress={() => router.push("/(auth)/signup/signup")}>
-                <Text
-                  style={{
-                    textDecorationLine: "underline",
-                    textDecorationStyle: "solid",
-                    color: "#FF9228",
-                  }}
-                >
-                  Sign up?
-                </Text>
+                <Text style={styles.signupLink}>Sign up?</Text>
               </Pressable>
             </Text>
           </View>
@@ -239,13 +210,16 @@ const Login: React.FC = () => {
 export default Login;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+  },
   text: {
-    display: "flex",
     alignItems: "center",
-    justifyContent: "center",
     marginTop: 80,
-    textAlign: "center",
-    width: "100%",
   },
   come: {
     fontSize: 30,
@@ -253,7 +227,6 @@ const styles = StyleSheet.create({
   },
   log: {
     fontSize: 12,
-    maxWidth: 314,
     textAlign: "center",
     marginTop: 11,
   },
@@ -263,7 +236,6 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#0D0140",
     marginBottom: 10,
   },
   input: {
@@ -272,12 +244,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 17,
     marginBottom: 15,
-    color: "#0D014099",
-    shadowColor: "#99ABC6",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 31,
-    elevation: 8,
   },
   passwordContainer: {
     flexDirection: "row",
@@ -286,24 +252,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 16,
     paddingVertical: 17,
-    shadowColor: "#99ABC6",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 31,
-    elevation: 8,
     marginBottom: 15,
   },
   passwordInput: {
     flex: 1,
-    color: "#0D014099",
-    fontSize: 16,
   },
   forgottenPassword: {
-    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 10,
+  },
+  checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
   },
   checkbox: {
     width: 24,
@@ -312,24 +273,19 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#99ABC6",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 31,
-    elevation: 8,
   },
-  checkboxContainer: {
-    flexDirection: "row",
-    gap: 15,
-    alignItems: "center",
+  rememberMeText: {
+    fontSize: 12,
+    color: "#AAA6B9",
+    marginLeft: 8,
+  },
+  forgotPasswordText: {
+    color: "#130160",
+    fontSize: 12,
   },
   buttonContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 19,
-    alignItems: "center",
-    width: "100%",
     marginTop: 36,
+    alignItems: "center",
   },
   loginBtn: {
     width: 266,
@@ -337,16 +293,38 @@ const styles = StyleSheet.create({
     backgroundColor: "#130160",
     borderRadius: 6,
     alignItems: "center",
-    justifyContent: "center",
+  },
+  loginBtnText: {
+    color: "#fff",
+    fontSize: 14,
+    textTransform: "uppercase",
   },
   googleBtn: {
     width: 266,
     paddingVertical: 16,
     backgroundColor: "#D6CDFE",
     borderRadius: 6,
-    gap: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 19,
+  },
+  googleIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 12,
+  },
+  googleBtnText: {
+    color: "#fff",
+    fontSize: 14,
+    textTransform: "uppercase",
+  },
+  signupPrompt: {
+    marginTop: 16,
+    textAlign: "center",
+  },
+  signupLink: {
+    color: "#FF9228",
+    textDecorationLine: "underline",
   },
 });
