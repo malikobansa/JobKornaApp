@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Stack } from "expo-router";
 import { Animated } from "react-native";
 
@@ -9,18 +9,7 @@ const Layout: React.FC = () => {
         screenOptions={{
           headerShown: false,
           gestureEnabled: true,
-          cardStyleInterpolator: ({ current, layouts }) => ({
-            cardStyle: {
-              transform: [
-                {
-                  translateX: current.progress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [layouts.screen.width, 0], // Slide effect
-                  }),
-                },
-              ],
-            },
-          }),
+          animation: "slide_from_right",
         }}
       />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
