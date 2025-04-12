@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- Do not touch current styles, you should only ever fix implementations or generate new components,view etc.
+- Assume I'm a junior mobile developer  and your responses should reflect that in teaching me.
+- Explain your reasoning behind every fix.
+- Write industry standard code at all times, if you can't let me know
+- Use comments sparingly, only use it when you write really complex functions.
+- Always use tw from '@/lib/tailwind.js' for component styling.
+- Keep the code dynamic and readable.

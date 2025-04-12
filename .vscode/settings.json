@@ -1,4 +1,19 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "cmake.sourceDirectory": "C:/Users/obansa/Desktop/ExpoProjects/jobkorna/node_modules/expo-modules-core/android"
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "cmake.sourceDirectory": "C:/Users/obansa/Desktop/ExpoProjects/jobkorna/node_modules/expo-modules-core/android",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["tw\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["tw`([^`]*)`", ".*?`([^`]*)`"],
+    ["tw\\s*=\\s*[\"'`]([^\"'`]*)[\"'`]"]
+  ],
+  "tailwindCSS.classAttributes": ["className", "class", "ngClass", "style"]
 }
